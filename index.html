@@ -70,7 +70,15 @@
         }
 
         function initAudio() {
-            audio = new webkitAudioContext();
+            function shimAudioContext() {
+                if (typeof AudioContext == "function") {
+                    return new AudioContext();
+                } else if (typeof webkitAudioContext == "function") {
+                    return new webkitAudioContext();
+                }
+            }
+
+            audio = shimAudioContext();
             oscillator = audio.createOscillator();
             oscillator.frequency.value = 440;
             oscillator.type = "sine";
